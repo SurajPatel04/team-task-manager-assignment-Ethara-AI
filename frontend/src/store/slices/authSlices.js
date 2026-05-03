@@ -3,8 +3,8 @@ import { scheduleTokenRefresh, clearTokenRefresh } from '../../utils/tokenRefres
 
 const initialState = {
     isAuthenticated: false,
-    user: null,       // { id, name, email }
-    loading: true,    // Start with loading true for initial auth check
+    user: null,
+    loading: true,
     error: null,
 };
 
@@ -30,7 +30,7 @@ const authSlice = createSlice({
         loginSuccess: (state, action) => {
             state.loading = false;
             state.isAuthenticated = true;
-            state.user = action.payload; // { id, name, email }
+            state.user = action.payload;
             state.error = null;
             scheduleTokenRefresh();
         },
@@ -44,7 +44,7 @@ const authSlice = createSlice({
         // ── Fetch current user ──
         setUser: (state, action) => {
             state.loading = false;
-            state.user = action.payload; // req.user from GET /auth/me
+            state.user = action.payload;
             state.isAuthenticated = true;
             state.error = null;
             scheduleTokenRefresh();
