@@ -228,7 +228,7 @@ export default function ProjectDetails() {
             {/* Header / Nav */}
             <div className="flex items-center justify-between mb-6">
                 <button 
-                    onClick={() => navigate('/projects')}
+                    onClick={() => navigate(-1)}
                     className="flex items-center gap-2 text-[13px] font-semibold text-slate-500 hover:text-slate-900 transition-colors"
                 >
                     <ArrowLeft className="w-4 h-4" />

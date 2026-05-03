@@ -12,8 +12,8 @@ app.use(cookieParser());
 
 const allowedOrigins =
     env.nodeEnv === "production"
-        ? ["https://zorvynassignment-swwh.onrender.com"]
-        : ["http://localhost:3000", "http://localhost:5173"];
+        ? [env.frontendUrl]
+        : ["http://localhost:3000", "http://localhost:5173", env.frontendUrl];
 
 app.use(
     cors({

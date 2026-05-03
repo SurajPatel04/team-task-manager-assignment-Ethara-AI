@@ -21,6 +21,8 @@ export const env = {
 
     nodeEnv: process.env.NODE_ENV || "development",
 
+    frontendUrl: process.FRONTEND_URL,
+
     accessToken: {
         secret: process.env.ACCESS_TOKEN_SECRET,
         expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "30m", // ✅ correct
