@@ -24,7 +24,11 @@ export const createProject = asyncHandler(async (req, res) => {
         }]
     })
 
-    return res.status(201).json(new ApiResponse(true, 201, 'Project created successfully', project))
+    const populatedProject = await Project.findById(project._id)
+        .populate('createdBy', 'name email')
+        .populate('members.userId', 'name email');
+
+    return res.status(201).json(new ApiResponse(true, 201, 'Project created successfully', populatedProject))
 })
 
 

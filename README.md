@@ -3,6 +3,8 @@
 Built as part of the Full-Stack Assignment for **Ethara AI**
 By: **Suraj Patel**
 
+🌐 **Live Demo:** [https://team-task-manager.surajpatel.dev/](https://team-task-manager.surajpatel.dev/)
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -15,7 +17,7 @@ cd backend
 npm install
 
 # Create .env file in backend folder
-cp .env.example .env
+cp .env-sample .env
 # Then fill in your values in .env
 
 npm run dev

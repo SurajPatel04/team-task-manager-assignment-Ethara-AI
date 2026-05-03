@@ -1,16 +1,53 @@
-# React + Vite
+# Team Task Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![Team Task Manager](https://img.shields.io/badge/Status-Live-success)
 
-Currently, two official plugins are available:
+A modern, responsive, and robust full-stack project management dashboard. Built for teams to collaborate, track progress, and manage tasks efficiently.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+🌐 **Live Demo:** [https://team-task-manager.surajpatel.dev/](https://team-task-manager.surajpatel.dev/)
 
-## React Compiler
+## Features
+- **Authentication:** Secure user login and registration with JWT.
+- **Project Management:** Create, view, update, and delete projects.
+- **Task Tracking:** Assign tasks to team members, set priorities, due dates, and update statuses (Todo, In Progress, Done).
+- **Role-Based Access Control:** Admin and Member roles with tailored permissions.
+- **Responsive Design:** A beautiful, fully responsive UI built with Tailwind CSS that works seamlessly on desktop and mobile.
+- **Interactive UI:** Glassmorphism effects, loading states, modal confirmations, and toast notifications.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
+- **Frontend:** React, Vite, Tailwind CSS, Redux Toolkit, React Router, Lucide Icons
+- **Backend:** Node.js, Express, MongoDB, Mongoose, JWT
 
-## Expanding the ESLint configuration
+## Getting Started Locally
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+- Node.js (v18+)
+- MongoDB (local or Atlas)
+
+### Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone <your-repo-url>
+   ```
+
+2. **Backend Setup:**
+   Navigate to the backend directory, install dependencies, and set up your `.env` file.
+   ```bash
+   cd backend
+   npm install
+   cp .env-sample .env
+   npm run dev
+   ```
+
+3. **Frontend Setup:**
+   Navigate to the frontend directory, install dependencies, and start the Vite dev server.
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
+
+## Deployment
+- The frontend is deployed and automatically built on **Netlify**.
+- The backend is deployed and hosted on **Render**.
