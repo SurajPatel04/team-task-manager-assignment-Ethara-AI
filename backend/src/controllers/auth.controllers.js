@@ -43,14 +43,14 @@ export const signIn = asyncHandler(async (req, res) => {
     const accessTokenOptions = {
         httpOnly: true,
         secure: env.nodeEnv === "production",
-        sameSite: "strict",
+        sameSite: env.nodeEnv === "production" ? "none" : "strict",
         maxAge: env.accessToken.expiresInMs,
     };
 
     const refreshTokenOptions = {
         httpOnly: true,
         secure: env.nodeEnv === "production",
-        sameSite: "strict",
+        sameSite: env.nodeEnv === "production" ? "none" : "strict",
         maxAge: env.refreshToken.expiresInMs,
         path: "/api/v1/auth/refresh",
     };
@@ -116,7 +116,7 @@ export const refreshToken = asyncHandler(async (req, res) => {
     const accessTokenOptions = {
         httpOnly: true,
         secure: env.nodeEnv === "production",
-        sameSite: "strict",
+        sameSite: env.nodeEnv === "production" ? "none" : "strict",
         maxAge: env.accessToken.expiresInMs,
         path: "/",
     };
@@ -124,7 +124,7 @@ export const refreshToken = asyncHandler(async (req, res) => {
     const refreshTokenOptions = {
         httpOnly: true,
         secure: env.nodeEnv === "production",
-        sameSite: "strict",
+        sameSite: env.nodeEnv === "production" ? "none" : "strict",
         maxAge: env.refreshToken.expiresInMs,
         path: "/api/v1/auth/refresh",
     };
@@ -152,7 +152,7 @@ export const logout = asyncHandler(async (req, res) => {
     const cookieOptions = {
         httpOnly: true,
         secure: env.nodeEnv === "production",
-        sameSite: "strict",
+        sameSite: env.nodeEnv === "production" ? "none" : "strict",
     };
 
     return res

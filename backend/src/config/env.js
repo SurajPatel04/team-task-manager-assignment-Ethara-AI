@@ -19,7 +19,7 @@ export const env = {
     port: process.env.PORT,
     mongoUri: process.env.MONGODB_URI,
 
-    nodeEnv: process.env.NODE_ENV || "development",
+    nodeEnv: process.env.NODE_ENV || process.env.nodeEnv || "development",
 
     frontendUrl: process.FRONTEND_URL,
 
