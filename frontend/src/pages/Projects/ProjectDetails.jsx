@@ -29,6 +29,7 @@ import UpdateTaskModal from '../../components/modals/UpdateTaskModal';
 import UpdateTaskStatusModal from '../../components/modals/UpdateTaskStatusModal';
 import DeleteConfirmModal from '../../components/modals/DeleteConfirmModal';
 import InviteMemberModal from '../../components/modals/InviteMemberModal';
+import ChangeRoleModal from '../../components/modals/ChangeRoleModal';
 
 export default function ProjectDetails() {
     const { id } = useParams();
@@ -51,6 +52,8 @@ export default function ProjectDetails() {
     const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
     const [isRemoveMemberModalOpen, setIsRemoveMemberModalOpen] = useState(false);
     const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
+    const [isChangeRoleModalOpen, setIsChangeRoleModalOpen] = useState(false);
+    const [memberToChangeRole, setMemberToChangeRole] = useState(null);
     const [memberToRemove, setMemberToRemove] = useState(null);
     const [taskToUpdate, setTaskToUpdate] = useState(null);
     const [taskToDelete, setTaskToDelete] = useState(null);
@@ -207,6 +210,20 @@ export default function ProjectDetails() {
             setIsRemoveMemberModalOpen(false);
             setMemberToRemove(null);
         }
+    };
+
+    const handleRoleChanged = (userId, newRole) => {
+        // Optimistically update members list
+        setMembers(prev =>
+            prev.map(m =>
+                (m.userId?._id || m.userId) === userId
+                    ? { ...m, role: newRole }
+                    : m
+            )
+        );
+        toast.success(`Role updated to ${newRole} successfully`);
+        // Silently re-sync project (updates userRole derived value)
+        fetchProjectDetails(true);
     };
 
     if (loading) {
@@ -626,16 +643,30 @@ export default function ProjectDetails() {
                                                     {userRole === 'admin' && (
                                                         <td className="px-6 py-5 text-right">
                                                             {!isCurrentUser && !isCreator && (
-                                                                <button
-                                                                    onClick={() => {
-                                                                        setMemberToRemove(member);
-                                                                        setIsRemoveMemberModalOpen(true);
-                                                                    }}
-                                                                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                                                                    title="Remove Member"
-                                                                >
-                                                                    <UserMinus className="w-4 h-4" />
-                                                                </button>
+                                                                <div className="flex items-center justify-end gap-1">
+                                                                    {/* Change Role */}
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setMemberToChangeRole(member);
+                                                                            setIsChangeRoleModalOpen(true);
+                                                                        }}
+                                                                        className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                                                                        title="Change Role"
+                                                                    >
+                                                                        <Shield className="w-4 h-4" />
+                                                                    </button>
+                                                                    {/* Remove Member */}
+                                                                    <button
+                                                                        onClick={() => {
+                                                                            setMemberToRemove(member);
+                                                                            setIsRemoveMemberModalOpen(true);
+                                                                        }}
+                                                                        className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                                        title="Remove Member"
+                                                                    >
+                                                                        <UserMinus className="w-4 h-4" />
+                                                                    </button>
+                                                                </div>
                                                             )}
                                                         </td>
                                                     )}
@@ -714,6 +745,18 @@ export default function ProjectDetails() {
                     fetchMembers();
                     fetchProjectDetails(true);
                 }}
+            />
+
+            <ChangeRoleModal
+                isOpen={isChangeRoleModalOpen}
+                onClose={() => {
+                    setIsChangeRoleModalOpen(false);
+                    setMemberToChangeRole(null);
+                }}
+                member={memberToChangeRole}
+                projectId={id}
+                onRoleChanged={handleRoleChanged}
+                api={api}
             />
 
             <DeleteConfirmModal
