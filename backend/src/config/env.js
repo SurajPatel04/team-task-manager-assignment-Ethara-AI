@@ -25,13 +25,13 @@ export const env = {
 
     accessToken: {
         secret: process.env.ACCESS_TOKEN_SECRET,
-        expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "30m", // ✅ correct
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRY || "30m",
         expiresInMs: ms(process.env.ACCESS_TOKEN_EXPIRY || "30m"),
     },
 
     refreshToken: {
         secret: process.env.REFRESH_TOKEN_SECRET,
-        expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "10d", // ✅ correct
+        expiresIn: process.env.REFRESH_TOKEN_EXPIRY || "10d",
         expiresInMs: ms(process.env.REFRESH_TOKEN_EXPIRY || "10d"),
     },
 

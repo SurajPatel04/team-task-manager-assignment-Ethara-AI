@@ -10,14 +10,27 @@ const app = express();
 app.use(express.json({ limit: "12kb" }));
 app.use(cookieParser());
 
-const allowedOrigins =
-    env.nodeEnv === "production"
-        ? [env.frontendUrl]
-        : ["http://localhost:3000", "http://localhost:5173", env.frontendUrl];
-
 app.use(
     cors({
-        origin: allowedOrigins,
+        origin: function (origin, callback) {
+            const allowedOrigins = [
+                "http://localhost:3000",
+                "http://localhost:5173",
+                env.frontendUrl
+            ];
+            
+            if (!origin) return callback(null, true);
+            
+            if (allowedOrigins.includes(origin)) {
+                return callback(null, true);
+            }
+            
+            if (origin.endsWith('.vercel.app')) {
+                return callback(null, true);
+            }
+            
+            return callback(new Error('CORS policy violation: origin not allowed'), false);
+        },
         credentials: true,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
