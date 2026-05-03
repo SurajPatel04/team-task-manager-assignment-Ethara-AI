@@ -43,10 +43,20 @@ export default function Navbar() {
                     <div className="flex justify-between h-16">
                         <div className="flex items-center">
                             <Link to="/" className="flex-shrink-0 flex items-center">
-                                <div className="w-9 h-9 bg-[#0F172A] rounded-lg flex items-center justify-center mr-2.5 shadow-sm">
-                                    <span className="text-white font-bold text-xl">T</span>
+                                <div className="w-10 h-10 flex items-center justify-center mr-2.5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full text-[#0F172A]">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M12 4C12 4 8 8 8 12C8 16 12 20 12 20" />
+                                        <path d="M12 4C12 4 16 8 16 12C16 16 12 20 12 20" />
+                                        <path d="M4 12C4 12 8 8 12 8C16 8 20 12 20 12" />
+                                        <path d="M4 12C4 12 8 16 12 16C16 16 20 12 20 12" />
+                                        <circle cx="12" cy="12" r="2" fill="currentColor" />
+                                    </svg>
                                 </div>
-                                <span className="font-bold text-xl text-[#0F172A] tracking-tight">TaskFlow</span>
+                                <div className="flex flex-col">
+                                    <span className="font-bold text-[22px] text-[#0F172A] tracking-tight leading-none mb-1">Team Task Manager</span>
+                                    <span className="text-[14px] text-[#2563EB] font-medium leading-none">Ethara.ai</span>
+                                </div>
                             </Link>
                         </div>
 

@@ -70,7 +70,7 @@ export default function Signup() {
             {/* ── Left Panel: Lottie animation ── */}
             <div className="auth-left">
                 <div className="auth-left-content">
-                    <h1 className="auth-brand">TaskFlow</h1>
+                    <h1 className="auth-brand">Team Task Manager</h1>
                     <p className="auth-tagline">Collaborate, organise, and ship faster.</p>
                     <div className="auth-lottie-wrapper">
                         <Lottie options={lottieOptions} height={320} width={320} />

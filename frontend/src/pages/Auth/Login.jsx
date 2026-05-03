@@ -65,7 +65,7 @@ export default function Login() {
             {/* ── Left Panel: Lottie animation ── */}
             <div className="auth-left">
                 <div className="auth-left-content">
-                    <h1 className="auth-brand">TaskFlow</h1>
+                    <h1 className="auth-brand">Team Task Manager</h1>
                     <p className="auth-tagline">Manage your team's work, effortlessly.</p>
                     <div className="auth-lottie-wrapper">
                         <Lottie options={lottieOptions} height={320} width={320} />
