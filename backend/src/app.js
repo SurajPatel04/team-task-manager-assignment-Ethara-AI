@@ -14,7 +14,7 @@ const allowedOrigins = [
     "http://localhost:3000",
     "http://localhost:5173",
     env.frontendUrl,
-    "https://team-task-manager-suraj-patel.netlify.app/"  // 👈 ADD THIS
+    "https://team-task-manager-suraj-patel.netlify.app/"
 ];
 
 app.use(cors({
@@ -26,10 +26,11 @@ app.use(cors({
             return callback(null, true);
         }
 
-        // allow vercel + netlify
+        // allow vercel + netlify + custom domain
         if (
             origin.endsWith(".vercel.app") ||
-            origin.endsWith(".netlify.app")
+            origin.endsWith(".netlify.app") ||
+            origin.endsWith(".surajpatel.dev")
         ) {
             return callback(null, true);
         }
