@@ -18,7 +18,6 @@ export const scheduleTokenRefresh = () => {
             scheduleTokenRefresh()
         } catch (error) {
             store.dispatch({ type: 'auth/logout' })
-            window.location.href = '/login'
         }
     }, ACCESS_TOKEN_EXPIRY - REFRESH_BEFORE)
 }
