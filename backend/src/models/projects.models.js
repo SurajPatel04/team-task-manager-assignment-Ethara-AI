@@ -11,6 +11,10 @@ const memberSchema = new Schema({
         enum: ['admin', 'member'],
         default: 'member',
     },
+    joinedAt: {
+        type: Date,
+        default: Date.now
+    }
 }, { _id: false })
 
 const projectSchema = new Schema({

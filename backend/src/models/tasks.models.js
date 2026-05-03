@@ -15,6 +15,10 @@ const taskSchema = new Schema({
         type: Date,
         required: [true, 'Due date is required'],
     },
+    completedAt: {
+        type: Date,
+        default: null,
+    },
     priority: {
         type: String,
         enum: ['low', 'medium', 'high'],

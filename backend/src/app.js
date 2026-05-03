@@ -19,7 +19,7 @@ app.use(
     cors({
         origin: allowedOrigins,
         credentials: true,
-        methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
         allowedHeaders: ["Content-Type", "Authorization"],
     })
 );
@@ -28,11 +28,13 @@ app.use(
 import authRoutes from "./routes/auth.routes.js";
 import projectRoutes from "./routes/project.routes.js";
 import taskRoutes from "./routes/task.routes.js";
+import dashBoard from "./routes/dashboard.routes.js"
 
 // Use routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/project", projectRoutes);
 app.use("/api/v1/task", taskRoutes);
+app.use("/api/v1/dashboard", dashBoard)
 
 app.use((req, res, next) => {
     const err = new ApiError(404, `Route not found: ${req.method} ${req.originalUrl}`);

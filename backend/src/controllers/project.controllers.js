@@ -30,12 +30,35 @@ export const createProject = asyncHandler(async (req, res) => {
 
 export const getAllProject = asyncHandler(async (req, res) => {
     const userId = req.user._id;
+    const { search, page = 1, limit = 10 } = req.query;
 
-    const projects = await Project.find({
-        'members.userId': userId
-    }).populate('createdBy', 'name email').populate('members.userId', 'name email')
+    const filter = { 'members.userId': userId };
+    
+    if (search) {
+        filter.name = { $regex: search, $options: 'i' };
+    }
 
-    return res.status(200).json(new ApiResponse(true, 200, 'Projects fetched successfully', projects))
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const [projects, total] = await Promise.all([
+        Project.find(filter)
+            .populate('createdBy', 'name email')
+            .populate('members.userId', 'name email')
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit)),
+        Project.countDocuments(filter)
+    ]);
+
+    return res.status(200).json(new ApiResponse(true, 200, 'Projects fetched successfully', {
+        projects,
+        pagination: {
+            page: parseInt(page),
+            limit: parseInt(limit),
+            total,
+            totalPages: Math.ceil(total / parseInt(limit))
+        }
+    }))
 })
 
 export const getProjectById = asyncHandler(async (req, res) => {
@@ -222,10 +245,9 @@ export const getProjectMembers = asyncHandler(async (req, res) => {
         .populate('members.userId', 'name email')
 
     const members = populatedProject.members.map(m => ({
-        userId: m.userId._id,
-        name: m.userId.name,
-        email: m.userId.email,
-        role: m.role
+        userId: m.userId, // This is the populated user object { _id, name, email }
+        role: m.role,
+        joinedAt: m.joinedAt
     }))
 
     return res.status(200).json(

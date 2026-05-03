@@ -39,6 +39,9 @@ export const createTask = asyncHandler(async (req, res) => {
 export const getAllTasks = asyncHandler(async (req, res) => {
     const project = req.project
     const { status, priority } = req.query
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 10
+    const skip = (page - 1) * limit
 
     const filter = { projectId: project._id }
 
@@ -52,13 +55,25 @@ export const getAllTasks = asyncHandler(async (req, res) => {
     if (status) filter.status = status
     if (priority) filter.priority = priority
 
+    const total = await Task.countDocuments(filter)
+
     const tasks = await Task.find(filter)
         .populate('assignedTo', 'name email')
         .populate('createdBy', 'name email')
         .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
 
     return res.status(200).json(
-        new ApiResponse(true, 200, 'Tasks fetched successfully', tasks)
+        new ApiResponse(true, 200, 'Tasks fetched successfully', {
+            tasks,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit)
+            }
+        })
     )
 })
 
@@ -115,7 +130,14 @@ export const updateTask = asyncHandler(async (req, res) => {
     if (description) task.description = description
     if (dueDate) task.dueDate = dueDate
     if (priority) task.priority = priority
-    if (status) task.status = status
+    if (status) {
+        if (status === 'done') {
+            task.completedAt = new Date()
+        } else {
+            task.completedAt = null
+        }
+        task.status = status
+    }
     if (assignedTo !== undefined) task.assignedTo = assignedTo || null
 
     await task.save()
@@ -144,6 +166,12 @@ export const updateTaskStatus = asyncHandler(async (req, res) => {
         if (!task.assignedTo?.equals(req.user._id)) {
             throw new ApiError(403, 'You can only update status of your assigned tasks')
         }
+    }
+
+    if (status === 'done') {
+        task.completedAt = new Date()
+    } else {
+        task.completedAt = null
     }
 
     task.status = status
