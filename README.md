@@ -32,6 +32,28 @@ cp .env.example .env
 # Then fill in your values in .env
 
 npm run dev
+
+---
+
+## 🧪 Test Accounts
+
+Use these accounts to test the application:
+
+| Role | Email | Password |
+|---|---|---|
+| Admin | suraj@gmail.com | Password123 |
+| Member | rahul@gmail.com | Password123 |
+| Member | priya@gmail.com | Password123 |
+
+> **Admin** → suraj@gmail.com is admin of 15 projects
+> **Rahul** → rahul@gmail.com is admin of 7 projects  
+> **Priya** → priya@gmail.com is admin of 30 projects
+
+To populate test data, navigate to the backend directory and run:
+```bash
+npm run seed
+```
+
 ---
 
 ## ⚙️ Environment Variables
