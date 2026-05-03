@@ -19,13 +19,8 @@ const userSchema = new Schema({
         type: String,
         required: [true, "Password is required"],
         select: false
-    },
-    role: {
-        type: String,
-        enum: ['admin', 'member'],
-        default: 'member',
-    },
-}, {timestamps: true});
+    }
+}, { timestamps: true });
 
 
 const SALT_ROUNDS = 10;
@@ -39,7 +34,7 @@ userSchema.pre("save", async function () {
 });
 
 
-userSchema.methods.isPasswordCorrect = async function(password){
+userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password)
 }
 

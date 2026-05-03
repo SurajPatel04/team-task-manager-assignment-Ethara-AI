@@ -30,8 +30,12 @@ export const signIn = asyncHandler(async (req, res) => {
 
     const user = await User.findOne({ email }).select("+password");
 
-    if (!user || !(await user.isPasswordCorrect(password))) {
-        throw new ApiError(401, "Invalid email or password");
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    if (!(await user.isPasswordCorrect(password))) {
+        throw new ApiError(401, "Invalid password");
     }
 
     const { accessToken, refreshToken } = await generateAuthTokens(user, req);
@@ -130,4 +134,36 @@ export const refreshToken = asyncHandler(async (req, res) => {
         .cookie("accessToken", accessToken, accessTokenOptions)
         .cookie("refreshToken", refreshToken, refreshTokenOptions)
         .json(new ApiResponse(true, 200, "Access token refreshed successfully"));
+});
+
+export const logout = asyncHandler(async (req, res) => {
+    const user = req.user;
+
+    const token = req.cookies?.refreshToken;
+    if (token) {
+        const hashedToken = hashToken(token);
+
+        await RefreshToken.findOneAndUpdate(
+            { token: hashedToken },
+            { isRevoked: true }
+        );
+    }
+
+    const cookieOptions = {
+        httpOnly: true,
+        secure: env.nodeEnv === "production",
+        sameSite: "strict",
+    };
+
+    return res
+        .clearCookie("accessToken", { ...cookieOptions, path: "/" })
+        .clearCookie("refreshToken", { ...cookieOptions, path: "/api/v1/auth/refresh" })
+        .status(200)
+        .json(new ApiResponse(true, 200, "Logged out successfully"));
+});
+
+export const getCurrentUser = asyncHandler(async (req, res) => {
+    return res.status(200).json(
+        new ApiResponse(true, 200, "Current user fetched successfully", req.user)
+    );
 });

@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from "cookie-parser";
 import { env } from "./config/env.js";
 import { errorMiddleware } from "./middleware/error.middleware.js";
+import { ApiError } from "./utils/apiError.utils.js";
 import cors from 'cors';
 
 const app = express();
@@ -25,13 +26,16 @@ app.use(
 
 // Import routes
 import authRoutes from "./routes/auth.routes.js";
+import projectRoutes from "./routes/project.routes.js";
+import taskRoutes from "./routes/task.routes.js";
 
 // Use routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/project", projectRoutes);
+app.use("/api/v1/task", taskRoutes);
 
 app.use((req, res, next) => {
-    const err = new Error(`Route not found: ${req.method} ${req.originalUrl}`);
-    err.statusCode = 404;
+    const err = new ApiError(404, `Route not found: ${req.method} ${req.originalUrl}`);
     next(err);
 });
 

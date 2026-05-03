@@ -6,7 +6,7 @@ export const errorMiddleware = (err, req, res, next) => {
 
     if (!(error instanceof ApiError)) {
         let statusCode = 500;
-        let message = "Internal Server Error";
+        let message = err.message || "Internal Server Error";
 
         if (err instanceof mongoose.Error.CastError) {
             statusCode = 400;

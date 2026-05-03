@@ -11,7 +11,7 @@ const memberSchema = new Schema({
         enum: ['admin', 'member'],
         default: 'member',
     },
-}, { _id: false }) 
+}, { _id: false })
 
 const projectSchema = new Schema({
     name: {
