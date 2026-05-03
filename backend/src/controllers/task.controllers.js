@@ -31,6 +31,8 @@ export const createTask = asyncHandler(async (req, res) => {
         status: 'todo'
     })
 
+    await task.populate('assignedTo', 'name email')
+    
     return res.status(201).json(
         new ApiResponse(true, 201, 'Task created successfully', task)
     )
@@ -131,16 +133,14 @@ export const updateTask = asyncHandler(async (req, res) => {
     if (dueDate) task.dueDate = dueDate
     if (priority) task.priority = priority
     if (status) {
-        if (status === 'done') {
-            task.completedAt = new Date()
-        } else {
-            task.completedAt = null
-        }
         task.status = status
+        task.completedAt = status === 'done' ? new Date() : null
     }
     if (assignedTo !== undefined) task.assignedTo = assignedTo || null
 
     await task.save()
+
+    await task.populate('assignedTo', 'name email')
 
     return res.status(200).json(
         new ApiResponse(true, 200, 'Task updated successfully', task)
@@ -174,11 +174,24 @@ export const updateTaskStatus = asyncHandler(async (req, res) => {
         task.completedAt = null
     }
 
+    let message = 'Task status updated successfully'
+    
+    // If moving from 'done' to 'inprogress' or 'todo', check if assignee is still in project
+    if (task.status === 'done' && status !== 'done' && task.assignedTo) {
+        const isStillMember = project.members.some(m => m.userId.equals(task.assignedTo))
+        if (!isStillMember) {
+            task.assignedTo = null
+            message = 'Task status updated and unassigned as the previous assignee is no longer a member of the project'
+        }
+    }
+
     task.status = status
     await task.save()
 
+    await task.populate('assignedTo', 'name email')
+
     return res.status(200).json(
-        new ApiResponse(true, 200, 'Task status updated successfully', task)
+        new ApiResponse(true, 200, message, task)
     )
 })
 

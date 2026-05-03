@@ -36,6 +36,15 @@ app.use("/api/v1/project", projectRoutes);
 app.use("/api/v1/task", taskRoutes);
 app.use("/api/v1/dashboard", dashBoard)
 
+
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        status: "ok",
+        uptime: process.uptime(),
+        timestamp: Date.now()
+    });
+});
+
 app.use((req, res, next) => {
     const err = new ApiError(404, `Route not found: ${req.method} ${req.originalUrl}`);
     next(err);

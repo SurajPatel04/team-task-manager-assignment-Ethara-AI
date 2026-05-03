@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Trash2, X, AlertTriangle } from 'lucide-react';
+import { Trash2, X, AlertTriangle, Loader2 } from 'lucide-react';
 
 export default function DeleteConfirmModal({ 
     isOpen, 
@@ -7,7 +7,8 @@ export default function DeleteConfirmModal({
     onConfirm, 
     title = "Delete Item",
     itemName, 
-    confirmLabel = "Delete"
+    confirmLabel = "Delete",
+    isLoading = false
 }) {
     useEffect(() => {
         if (isOpen) {
@@ -36,6 +37,7 @@ export default function DeleteConfirmModal({
                     <button
                         onClick={onClose}
                         className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-full transition-colors outline-none"
+                        disabled={isLoading}
                     >
                         <X className="w-5 h-5" />
                     </button>
@@ -54,16 +56,22 @@ export default function DeleteConfirmModal({
                 <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50">
                     <button
                         onClick={onClose}
-                        className="px-5 py-2.5 text-[13px] font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-[8px] transition-colors"
+                        disabled={isLoading}
+                        className="px-5 py-2.5 text-[13px] font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-[8px] transition-colors disabled:opacity-50"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={onConfirm}
-                        className="px-5 py-2.5 text-[13px] font-bold text-white bg-red-600 hover:bg-red-700 rounded-[8px] transition-colors flex items-center gap-2"
+                        disabled={isLoading}
+                        className="px-5 py-2.5 text-[13px] font-bold text-white bg-red-600 hover:bg-red-700 rounded-[8px] transition-colors flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                        <Trash2 className="w-4 h-4" />
-                        {confirmLabel}
+                        {isLoading ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                            <Trash2 className="w-4 h-4" />
+                        )}
+                        {isLoading ? 'Processing...' : confirmLabel}
                     </button>
                 </div>
             </div>

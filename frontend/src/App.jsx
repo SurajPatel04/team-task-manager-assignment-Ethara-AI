@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser, logout, setLoading } from './store/slices/authSlices';
 import api from '../services/api';
+import { scheduleTokenRefresh } from './utils/tokenRefresh';
 
 import ProtectedRoute from './components/routes/ProtectedRoute';
 import PublicRoute from './components/routes/PublicRoute';
@@ -34,6 +35,8 @@ function App() {
         const response = await api.get('/auth/me');
         if (response.data.success) {
           dispatch(setUser(response.data.data));
+          // Start silent refresh
+          scheduleTokenRefresh();
         } else {
           dispatch(logout());
         }

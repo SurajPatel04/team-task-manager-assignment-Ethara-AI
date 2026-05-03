@@ -1,9 +1,10 @@
 import api from '../../services/api'
 import { store } from '../store/store.js'
+import ms from 'ms'
 
-
-const ACCESS_TOKEN_EXPIRY = 30 * 60 * 1000
-const REFRESH_BEFORE = 2 * 60 * 1000
+const envExpiry = import.meta.env.VITE_ACCESS_TOKEN_EXPIRY || '30m';
+const ACCESS_TOKEN_EXPIRY = ms(envExpiry); 
+const REFRESH_BEFORE = 30 * 1000
 
 let refreshTimer = null
 

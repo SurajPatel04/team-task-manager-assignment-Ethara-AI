@@ -33,7 +33,7 @@ export const getAllProject = asyncHandler(async (req, res) => {
     const { search, page = 1, limit = 10 } = req.query;
 
     const filter = { 'members.userId': userId };
-    
+
     if (search) {
         filter.name = { $regex: search, $options: 'i' };
     }
@@ -148,6 +148,15 @@ export const removeMember = asyncHandler(async (req, res) => {
         $pull: { members: { userId: new mongoose.Types.ObjectId(userId) } }
     })
 
+    await Task.updateMany(
+        {
+            projectId: project._id,
+            assignedTo: new mongoose.Types.ObjectId(userId),
+            status: { $in: ['todo', 'inprogress'] }
+        },
+        { $set: { assignedTo: null } }
+    )
+
     const userToRemove = await User.findById(userId).select('name')
 
     return res.status(200).json(
@@ -184,6 +193,15 @@ export const leaveProject = asyncHandler(async (req, res) => {
     await Project.findByIdAndUpdate(project._id, {
         $pull: { members: { userId } }
     })
+
+    await Task.updateMany(
+        {
+            projectId: project._id,
+            assignedTo: userId,
+            status: { $in: ['todo', 'inprogress'] }
+        },
+        { $set: { assignedTo: null } }
+    )
 
     return res.status(200).json(
         new ApiResponse(true, 200, 'You have left the project successfully')

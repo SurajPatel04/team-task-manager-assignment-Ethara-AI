@@ -65,6 +65,7 @@ pnpm-lock.yaml
 # =========================
 # Backend specific
 # =========================
+backend/seed.js
 uploads/
 temp/
 *.sqlite

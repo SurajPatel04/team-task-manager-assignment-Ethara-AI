@@ -72,7 +72,7 @@ export default function UpdateTaskModal({ isOpen, onClose, task, projectId, proj
 
             const response = await api.put(`/task/${task._id}?projectId=${projectId}`, payload);
             if (response.data.success) {
-                toast.success('Task updated successfully!');
+                toast.success(response.data.message || 'Task updated successfully!');
                 onTaskUpdated(response.data.data);
                 onClose();
             }

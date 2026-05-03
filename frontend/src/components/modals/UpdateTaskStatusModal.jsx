@@ -35,7 +35,7 @@ export default function UpdateTaskStatusModal({ isOpen, onClose, task, projectId
         try {
             const response = await api.patch(`/task/${task._id}/status?projectId=${projectId}`, { status });
             if (response.data.success) {
-                toast.success('Task status updated!');
+                toast.success(response.data.message || 'Task status updated!');
                 onTaskUpdated(response.data.data);
                 onClose();
             }
