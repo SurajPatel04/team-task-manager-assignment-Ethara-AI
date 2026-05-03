@@ -58,6 +58,7 @@ export default function ProjectDetails() {
     const [taskPagination, setTaskPagination] = useState({ total: 0, totalPages: 1 });
     const [isRemovingMember, setIsRemovingMember] = useState(false);
     const [isDeletingTask, setIsDeletingTask] = useState(false);
+    const [isLeavingProject, setIsLeavingProject] = useState(false);
 
     const userRole = useMemo(() => {
         if (!project || !user) return 'member';
@@ -172,6 +173,7 @@ export default function ProjectDetails() {
     }, [id, taskPage, activeTaskTab, activeMainTab]);
 
     const handleLeaveProject = async () => {
+        setIsLeavingProject(true);
         try {
             const res = await api.delete(`/project/${id}/leave`);
             if (res.data.success) {
@@ -182,6 +184,7 @@ export default function ProjectDetails() {
             console.error('Failed to leave project', err);
             toast.error(err.response?.data?.message || 'Could not leave project');
         } finally {
+            setIsLeavingProject(false);
             setIsLeaveModalOpen(false);
         }
     };
@@ -700,6 +703,7 @@ export default function ProjectDetails() {
                 title="Leave Project"
                 itemName={project.name}
                 confirmLabel="Leave Project"
+                isLoading={isLeavingProject}
             />
 
             <InviteMemberModal

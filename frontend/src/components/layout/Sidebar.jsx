@@ -10,9 +10,13 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../../store/slices/authSlices';
 import api from '../../../services/api';
 import { toast } from 'react-toastify';
+import { useState } from 'react';
+import DeleteConfirmModal from '../modals/DeleteConfirmModal';
 
 export default function Sidebar({ isOpen, onClose }) {
     const location = useLocation();
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     const navItems = [
         { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
@@ -22,6 +26,7 @@ export default function Sidebar({ isOpen, onClose }) {
     const dispatch = useDispatch();
 
     const handleLogout = async () => {
+        setIsLoggingOut(true);
         try {
             await api.post('/auth/logout');
             dispatch(logout());
@@ -29,6 +34,9 @@ export default function Sidebar({ isOpen, onClose }) {
         } catch (err) {
             console.error('Logout failed', err);
             dispatch(logout()); // Logout locally anyway
+        } finally {
+            setIsLoggingOut(false);
+            setIsLogoutModalOpen(false);
         }
     };
 
@@ -82,7 +90,7 @@ export default function Sidebar({ isOpen, onClose }) {
                 {/* Bottom Action */}
                 <div className="p-4 border-t border-slate-100">
                     <button
-                        onClick={handleLogout}
+                        onClick={() => setIsLogoutModalOpen(true)}
                         className="w-full bg-[#0F172A] text-white flex items-center justify-center gap-2 py-3 rounded-[12px] text-sm font-bold shadow-md shadow-blue-900/20 hover:opacity-90 transition-all active:scale-[0.98]"
                     >
                         <LogOut className="w-4 h-4" strokeWidth={2.5} />
@@ -90,6 +98,18 @@ export default function Sidebar({ isOpen, onClose }) {
                     </button>
                 </div>
             </aside>
+
+            <DeleteConfirmModal
+                isOpen={isLogoutModalOpen}
+                onClose={() => setIsLogoutModalOpen(false)}
+                onConfirm={handleLogout}
+                title="Sign Out"
+                customMessage={<>Are you sure you want to sign out of your account?</>}
+                confirmLabel="Sign Out"
+                confirmIcon={LogOut}
+                confirmButtonColor="bg-[#0F172A] text-white hover:opacity-90"
+                isLoading={isLoggingOut}
+            />
         </>
     );
 }

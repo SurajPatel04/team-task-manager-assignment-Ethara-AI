@@ -28,6 +28,7 @@ export default function ProjectsList() {
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [projectToDelete, setProjectToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         if (!pageStr) {
@@ -99,6 +100,7 @@ export default function ProjectsList() {
 
     const handleDeleteProject = async () => {
         if (!projectToDelete) return;
+        setIsDeleting(true);
         try {
             const res = await api.delete(`/project/${projectToDelete._id}`);
             if (res.data.success) {
@@ -110,6 +112,8 @@ export default function ProjectsList() {
         } catch (err) {
             console.error('Failed to delete project', err);
             toast.error(err.response?.data?.message || 'Could not delete project');
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -230,8 +234,8 @@ export default function ProjectsList() {
                                                 confirmDeleteProject(project);
                                             }}
                                             className={`px-4 md:px-6 py-2 text-[12px] md:text-[13px] font-bold rounded-[8px] transition-all ${isCreator
-                                                ? 'bg-red-600 text-white hover:bg-red-700 shadow-sm shadow-red-200 cursor-pointer active:scale-95'
-                                                : 'bg-red-50 text-red-300 cursor-not-allowed opacity-60'
+                                                ? 'bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 cursor-pointer active:scale-95'
+                                                : 'bg-red-50/50 text-red-300 cursor-not-allowed'
                                                 }`}
                                         >
                                             Delete
@@ -299,6 +303,7 @@ export default function ProjectsList() {
                 title="Delete Project"
                 itemName={projectToDelete?.name || ''}
                 confirmLabel="Delete Project"
+                isLoading={isDeleting}
             />
         </div>
     );
