@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import LottieLib from 'react-lottie';
 const Lottie = LottieLib.default || LottieLib;
-import { setLoading, setError, clearError, loginSuccess, setUser } from '../../store/slices/authSlices';
+import { setError, clearError, loginSuccess, setUser } from '../../store/slices/authSlices';
 import api from '../../../services/api';
 import { toast } from 'react-toastify';
 import loginAnimation from '../../assets/Login.json';
@@ -11,10 +11,11 @@ import loginAnimation from '../../assets/Login.json';
 export default function Login() {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [showPassword, setShowPassword] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { loading, error } = useSelector((state) => state.auth);
+    const { error } = useSelector((state) => state.auth);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -23,7 +24,7 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(setLoading(true));
+        setIsSubmitting(true);
         try {
             const response = await api.post('/auth/signin', formData);
             if (response.data.success) {
@@ -37,19 +38,16 @@ export default function Login() {
             const responseData = err.response?.data;
             const errorMessage = responseData?.message || 'Login failed. Please check your credentials.';
             dispatch(setError(errorMessage));
-            
-            // Show the main error message
             toast.error(errorMessage);
-            
-            // Show specific field errors if they exist
             if (responseData?.errors && Array.isArray(responseData.errors)) {
                 responseData.errors.forEach(e => {
-                    // Only show if it's different from the main message to avoid redundancy
                     if (e.message && e.message !== errorMessage) {
                         toast.error(e.message);
                     }
                 });
             }
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -62,6 +60,35 @@ export default function Login() {
 
     return (
         <div className="auth-page">
+            {isSubmitting && (
+                <div
+                    style={{
+                        position: 'fixed', inset: 0, zIndex: 9999,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        backgroundColor: 'rgba(15,23,42,0.35)',
+                        backdropFilter: 'blur(6px)',
+                        WebkitBackdropFilter: 'blur(6px)',
+                        pointerEvents: 'all',
+                    }}
+                >
+                    <div style={{
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px',
+                        background: 'rgba(255,255,255,0.92)', borderRadius: '20px',
+                        padding: '36px 48px', boxShadow: '0 12px 40px rgba(0,0,0,0.22)',
+                    }}>
+                        <svg style={{ width: 48, height: 48, animation: 'spin 0.8s linear infinite' }}
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle style={{ opacity: 0.2 }} cx="12" cy="12" r="10"
+                                stroke="#0F172A" strokeWidth="3" />
+                            <path style={{ opacity: 1 }} fill="#0F172A"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                        </svg>
+                        <span style={{ fontWeight: 700, fontSize: 15, color: '#0F172A', letterSpacing: '0.02em' }}>
+                            Signing in…
+                        </span>
+                    </div>
+                </div>
+            )}
             {/* ── Left Panel: Lottie animation ── */}
             <div className="auth-left">
                 <div className="auth-left-content">
@@ -121,8 +148,8 @@ export default function Login() {
                             </div>
                         </div>
 
-                        <button type="submit" disabled={loading} className="auth-btn">
-                            {loading ? (
+                        <button type="submit" disabled={isSubmitting} className="auth-btn">
+                            {isSubmitting ? (
                                 <svg className="spin-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
